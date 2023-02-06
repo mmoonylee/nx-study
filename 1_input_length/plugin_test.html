@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script>
+
+// 참고 사이트
+// https://offbyone.tistory.com/129
+// https://webclub.tistory.com/108
+
+// $.fn. 객체에 새로운 메소드 생성
+// = $.prototype  상속받는..?
+$.fn.greenify = function() {
+	this.css("color", "green");
+};
+
+// 플러그인 호출
+$("a").greenify();
+
+
+// IIFE ( Immediately Invoked Function Expression) 
+// -> $ 별칭을 플러그인 내부에 지역변수로 정의하여 사용. 
+// 다른 라이브러리와의 충돌을 방지, 함수를 정의하고 바로 실행.
+
+$(function ($){
+    jQuery.fn.nx_input = function(){
+
+        alert('플러그인 실행');
+
+    };
+
+    var input_first = {
+        background_default : "#fff",
+        background_disabled: "pink",
+        // apple: 0,
+        // banana: { weight: 52, price: 100 },
+    };
+    
+});
+
+</script>
