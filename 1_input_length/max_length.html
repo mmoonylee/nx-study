@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Reset */
+        *{font-family: sans-serif;}
+        ul{list-style: none;padding:0;margin:0;}
+
+        /* Style */
+        .sec{height:100vh;padding:10px;}
+        .sec-form__item{display: flex;position:relative;;padding:5px 0}
+        .sec-form__label{display:flex;align-items:center;;flex-shrink:0;;width:150px;}
+        .sec-form__input,
+        .sec-form__textarea{width:100%;padding:0 20px;border-radius:0;border:1px solid #eee;resize:none}
+        .sec-form__input{height:40px;}
+        .sec-form__textarea{height:80px;padding:20px}
+        .sec-form__count{display:flex;align-items: center;justify-content: center;position: absolute;top:100%;right:0;width:70px;height:30px;opacity:0;padding:0 5px;font-size:13px;color:#fff;border-radius:3px;background-color:green;transition:opacity .3s;z-index: 1;}
+        .sec-form__input:focus + .sec-form__count,
+        .sec-form__textarea:focus + .sec-form__count{opacity:1}
+        .sec-form__input.disabled + .sec-form__count,
+        .sec-form__input.textarea + .sec-form__count{background-color: red;}
+        
+        .sec-form__item.all .sec-form__count{width:auto;}
+        .sec-form__item.all .count{margin:0 5px;}
+
+    </style>
+</head>
+<body>
+    <section class="sec">
+        <h1 class="sec-title">BOOTSTRAP MAXLENGTH</h1>
+        <p class="sec-desc">Read The Official Bootstrap MaxLength Documentation fot a full list of instructions and other options.</p>
+        <form action="#" class="sec-form">
+            <ul class="sec-form__list">
+                <li class="sec-form__item">
+                    <label for="user-usage" class="sec-form__label">Default Usage</label>
+                    <input type="text" id="user-usage" class="sec-form__input __chk-max" placeholder="Type Something.." maxlength="25">
+                </li>
+                <li class="sec-form__item">
+                    <label for="user-few" class="sec-form__label">Few options</label>
+                    <input type="text" id="user-few" class="sec-form__input __chk-max" placeholder="Type Something.." maxlength="20">
+                </li>
+                <li class="sec-form__item all">
+                    <label for="user-all" class="sec-form__label">All the options</label>
+                    <input type="text" id="user-all" class="sec-form__input __chk-max" placeholder="Type Something.." maxlength="10">
+                    <div class="sec-form__count __chk-count">You have <span id="count" class="count">01</span> of 10  chars remaining.</div>
+                </li>
+                <li class="sec-form__item">
+                    <label for="user-textarea" class="sec-form__label">Text Area</label>
+                    <textarea name="user-textarea" id="user-textarea" class="sec-form__textarea __chk-max" maxlength="100" placeholder="This textarea has a limit of 100 chars."></textarea>
+                    <div class="sec-form__count __chk-count"><span id="count">01</span>/ 100</div>
+                </li>
+            </ul>
+        </form>
+    </section>
+
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script>
+    //생성 및 삭제
+    $(".__chk-max").on("click", function(){
+        let text = $(this).val();
+        let text_leng = text.length;
+        let input_leng = $(this).attr("maxlength");
+        (text_leng<10) ? text_leng = "0"+text_leng : text_leng = text_leng;
+        let count_boxs = '<div class="sec-form__count __chk-count"><span id="count">'+text_leng+'</span>/'+input_leng+'</div>'
+        $(this).parent().append(count_boxs);
+    }).on("focusout", function(){
+        $(this).next(".__chk-count").remove();
+    });
+    
+    //키 누를때
+    $(".__chk-max").keyup(function (e) {
+        let text = $(this).val();
+        let text_leng = text.length;
+        let input_leng = $(this).attr("maxlength");
+        (text_leng<10) ? text_leng = "0"+text_leng : text_leng = text_leng;
+        
+        $(this).next(".__chk-count").find("#count").text(text_leng);
+        (text_leng<input_leng) ? $(this).removeClass("disabled") : $(this).addClass("disabled");
+    });
+
+
+</script>
