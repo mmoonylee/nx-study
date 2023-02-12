@@ -7,44 +7,77 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <input type="text" class="__nx_input">
 </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script>
+    console.log("start")
 
 // 참고 사이트
 // https://offbyone.tistory.com/129
 // https://webclub.tistory.com/108
 
+// ──────────────────────────────────────────────────────────────────────── //
+
 // $.fn. 객체에 새로운 메소드 생성
 // = $.prototype  상속받는..?
-$.fn.greenify = function() {
-	this.css("color", "green");
+
+$.fn.greenify = function() {  //jquery 플러그인 을 만들건데 이름은 greenify
+	this.css("color", "green");       // 기능은 jquery 객체 받을 아이의 .css ~  
+                                      // ❗ this 와 $(this) ? 📖 Deep dive : this
 };
-
 // 플러그인 호출
-$("a").greenify();
+$("a").greenify();   // 실행할때 jqurey 객체 불러옴
 
+// ──────────────────────────────────────────────────────────────────────── //
 
 // IIFE ( Immediately Invoked Function Expression) 
 // -> $ 별칭을 플러그인 내부에 지역변수로 정의하여 사용. 
-// 다른 라이브러리와의 충돌을 방지, 함수를 정의하고 바로 실행.
+// 다른 라이브러리와의 충돌을 방지, 함수를 정의하고 바로 실행.  📖 Deep dive : IIFE
 
-$(function ($){
-    jQuery.fn.nx_input = function(){
+(function($){             // 즉시 호출 함수로 감싸서 넣으면 플러그인의 $변수 충돌을 피할 수 있고
+    let aa = "#fff";      // private 변수도 가질 수 있다
+    $.fn.test_1 = function (){
+        console.log("dd");
+        return this.each(function (){
+            //각 요소에 대해 작업
+        });
+    }
+}(jQuery));
 
-        alert('플러그인 실행');
 
+// ──────────────────────────────────────────────────────────────────────── //
+
+// 각각 다른 input창을 만들기.
+// 옵션을 통해 쉽게 css 변경
+// 옵션 내용 : max_length / default background color / disabled background color / position / 
+
+(function($){
+    $.fn.nx_input = function(options){
+        let settings = $.extend ({  //기본값 설정
+            maxLength : "10",
+            defaultColor : "green",
+            disabledColor : "red",
+            position: "center"
+        }, options );
+
+        this.attr({
+            maxlength : settings.maxLength,
+        })
+        this.css({    
+            backgroundColor: settings.defaultColor,
+            disabledColor : settings.disabledColor,
+            position: settings.position
+        });
     };
-
-    var input_first = {
-        background_default : "#fff",
-        background_disabled: "pink",
-        // apple: 0,
-        // banana: { weight: 52, price: 100 },
-    };
-    
+}(jQuery));
+$(".__nx_input").nx_input({
+    maxLength : "20",
+    defaultColor: "#eee",
+    disabledColor : "pink",
+    position:"center"
 });
 
+// 이정도면 될 것 같다.. 본 파일에 적용해보기!
 </script>

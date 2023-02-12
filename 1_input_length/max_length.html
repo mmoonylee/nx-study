@@ -22,10 +22,7 @@
         .sec-form__input:focus + .sec-form__count,
         .sec-form__textarea:focus + .sec-form__count{opacity:1}
         .sec-form__input.disabled + .sec-form__count,
-        .sec-form__input.textarea + .sec-form__count{background-color: red;}
-        
-        .sec-form__item.all .sec-form__count{width:auto;}
-        .sec-form__item.all .count{margin:0 5px;}
+        .sec-form__textarea.disabled + .sec-form__count{background-color: red;}
 
     </style>
 </head>
@@ -37,21 +34,19 @@
             <ul class="sec-form__list">
                 <li class="sec-form__item">
                     <label for="user-usage" class="sec-form__label">Default Usage</label>
-                    <input type="text" id="user-usage" class="sec-form__input __chk-max" placeholder="Type Something.." maxlength="25">
+                    <input type="text" id="user-usage" class="sec-form__input __chk-max" placeholder="Type Something..">
                 </li>
                 <li class="sec-form__item">
                     <label for="user-few" class="sec-form__label">Few options</label>
-                    <input type="text" id="user-few" class="sec-form__input __chk-max" placeholder="Type Something.." maxlength="20">
+                    <input type="text" id="user-few" class="sec-form__input __chk-max" placeholder="Type Something..">
                 </li>
                 <li class="sec-form__item all">
                     <label for="user-all" class="sec-form__label">All the options</label>
-                    <input type="text" id="user-all" class="sec-form__input __chk-max" placeholder="Type Something.." maxlength="10">
-                    <div class="sec-form__count __chk-count">You have <span id="count" class="count">01</span> of 10  chars remaining.</div>
+                    <input type="text" id="user-all" class="sec-form__input __chk-max" placeholder="Type Something..">
                 </li>
                 <li class="sec-form__item">
                     <label for="user-textarea" class="sec-form__label">Text Area</label>
-                    <textarea name="user-textarea" id="user-textarea" class="sec-form__textarea __chk-max" maxlength="100" placeholder="This textarea has a limit of 100 chars."></textarea>
-                    <div class="sec-form__count __chk-count"><span id="count">01</span>/ 100</div>
+                    <textarea name="user-textarea" id="user-textarea" class="sec-form__textarea __chk-max" placeholder="This textarea has a limit of 100 chars."></textarea>
                 </li>
             </ul>
         </form>
@@ -61,28 +56,62 @@
 </html>
 <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 <script>
-    //생성 및 삭제
-    $(".__chk-max").on("click", function(){
-        let text = $(this).val();
-        let text_leng = text.length;
-        let input_leng = $(this).attr("maxlength");
-        (text_leng<10) ? text_leng = "0"+text_leng : text_leng = text_leng;
-        let count_boxs = '<div class="sec-form__count __chk-count"><span id="count">'+text_leng+'</span>/'+input_leng+'</div>'
-        $(this).parent().append(count_boxs);
-    }).on("focusout", function(){
-        $(this).next(".__chk-count").remove();
-    });
+//키 누를때
+$(".__chk-max").keyup(function (e) {
+    let text_leng = $(this).val().length;
+    let input_leng = $(this).attr("maxlength");
+    (text_leng<10) ? text_leng = "0"+text_leng : text_leng = text_leng;
     
-    //키 누를때
-    $(".__chk-max").keyup(function (e) {
-        let text = $(this).val();
-        let text_leng = text.length;
-        let input_leng = $(this).attr("maxlength");
-        (text_leng<10) ? text_leng = "0"+text_leng : text_leng = text_leng;
-        
-        $(this).next(".__chk-count").find("#count").text(text_leng);
-        (text_leng<input_leng) ? $(this).removeClass("disabled") : $(this).addClass("disabled");
-    });
+    $(this).next(".__chk-count").find("#count").text(text_leng);
+    (text_leng<input_leng) ? $(this).removeClass("disabled") : $(this).addClass("disabled");
+});
 
+// 플러그인 실행 (한번만 실행됨)
+// 생성해서 넣고 append까지 끝내고opaituy로 숨김상태
+// focus되면 opacity 만 주기 
+(function($){
+    $.fn.nx_input = function(options){
+        //생성
+        let text_leng = $(this).val().length;
+        (text_leng<10) ? text_leng = "0"+text_leng : text_leng = text_leng;
+        let count_boxs = '<div class="sec-form__count __chk-count"><span id="count">'+text_leng+'</span>/<span id="max"></span></div>'
+        $(this).parent().append(count_boxs);
+
+        //기본값 설정
+        let settings = $.extend ({  
+            input_background_color : "#fff",
+            maxLength : "10",
+            count_default_color : "green",
+            count_disabled_color : "red",
+            position: "left"
+        }, options );
+
+        this.attr({
+            maxlength : settings.maxLength,
+        });
+        this.css({
+            backgroundColor : settings.input_background_color ,
+            textAlign: settings.position
+        });
+        this.next(".__chk-count").css({    
+            backgroundColor: settings.count_default_color,
+            // count_disabled_color : settings.count_disabled_color,
+        });
+        this.next(".__chk-count").find("#max").text(settings.maxLength)
+    };
+}(jQuery));
+$(".__chk-max").nx_input({
+    input_background_color :"#eee",
+    maxLength : "25",
+    count_default_color: "limegreen",
+    // disabledColor : "pink",
+    position:"right"
+});
+
+//disabled color 변경이 안됨. 왜냐면 disabled color는 __nx_input.disabled 되어야 css에서 미리 입력된 컬러 받아서 하는건데
+// 그 이후에 nx_input 으로 bgc를 받아와서 덧씌워지므로 그냥 무조건 backgroundColor 값이 나오는것
+// 그렇다면 diasbled coilor 받아서 하는 방법은....?
+// 체크사항은 key up할때마다 val length체크해줘서 classToggle 해줘야함
+//disable 컬러값만 가지고 올수 있으면 되는데 ..
 
 </script>
