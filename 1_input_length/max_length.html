@@ -95,11 +95,19 @@ $(".__chk-max").keyup(function (e) {
         });
         this.next(".__chk-count").css({    
             backgroundColor: settings.count_default_color,
-            // count_disabled_color : settings.count_disabled_color,
         });
-        this.next(".__chk-count").find("#max").text(settings.maxLength)
+        this.next(".__chk-count").find("#max").text(settings.maxLength);
+    
+        // 현재 : 키누를때마다 체크해서 disabled class 넣뺏
+        // 문제점 : nx_input으로 불러와서 실행하는건 한번만 하기때무네 ..disabled로 bgc바꾸는건 안될듯
+        // 방법? disabled 일때 바꿔놓고..
+        
+        console.log(this);
+
     };
 }(jQuery));
+
+alert($(".__chk-max").nx_input("get"))
 $(".__chk-max").nx_input({
     input_background_color :"#eee",
     maxLength : "25",
